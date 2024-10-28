@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EstacionamentoApp.Aplicacoes;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -21,6 +22,7 @@ namespace EstacionamentoApp
         {
             string placa = txtPlaca.Text.Trim();
 
+            VeiculoRepository.AdicionarVeiculo(placa);
 
             if (string.IsNullOrEmpty(placa))
             {
