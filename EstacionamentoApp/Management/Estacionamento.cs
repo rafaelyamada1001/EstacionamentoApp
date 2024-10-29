@@ -1,18 +1,19 @@
-﻿using EstacionamentoApp.Interface;
+﻿using EstacionamentoApp.DataBase;
+using EstacionamentoApp.Interface;
 using MySql.Data.MySqlClient;
 
 
 namespace EstacionamentoApp.Management
 {
-    public class Estacionamento : IVeiculoRepository
+    public class EstacionamentoService : IVeiculoRepository
 
     {
-        private string connectionString = "Server=localhost;Database=teste;User ID=root;Password=1234;";
+        private string connectionString = "Server=localhost;Database=teste;User ID=root;Password=25130321;";
 
         private decimal valorHora;
         public int Vagas { get; set; }
 
-        public Estacionamento(decimal valorHora, int vagas)
+        public EstacionamentoService(decimal valorHora, int vagas)
         {
             this.valorHora = valorHora;
             Vagas = vagas;
@@ -111,13 +112,13 @@ namespace EstacionamentoApp.Management
                         {
                             while (reader.Read())
                             {
-                                Console.WriteLine("Placa:{0} - Hora Entrada:{1}", reader.GetString("placa"),
-                                    reader.GetDateTime("HoraEntrada"));
+                                string message = $"Placa: {reader.GetString("placa")} - Hora Entrada: {reader.GetDateTime("HoraEntrada")}";
+                                MessageBox.Show(message);
                             }
                         }
                         else
                         {
-                            Console.WriteLine("Nenhum veículo estacionado");
+                            MessageBox.Show("Nenhum veículo estacionado");
                         }
                     }
                 }
@@ -133,9 +134,10 @@ namespace EstacionamentoApp.Management
                     connection.Open();
                     using (MySqlDataReader reader = command.ExecuteReader())
                     {
-                        if (!reader.Read())
+                        if (reader.Read())
                         {
-                            Console.WriteLine($"Vagas Desocupadas:{Vagas}");
+                            string message = ($"Vagas Desocupadas:{Vagas}");
+                            MessageBox.Show(message);
                             return;
                         }
 

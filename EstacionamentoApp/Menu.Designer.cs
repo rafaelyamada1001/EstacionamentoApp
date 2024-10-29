@@ -36,11 +36,15 @@
             button3 = new Button();
             buttonRetirar = new Button();
             buttonEstacionar = new Button();
+            label3 = new Label();
+            button1 = new Button();
             groupBox1.SuspendLayout();
             SuspendLayout();
             // 
             // groupBox1
             // 
+            groupBox1.Controls.Add(button1);
+            groupBox1.Controls.Add(label3);
             groupBox1.Controls.Add(buttonSair);
             groupBox1.Controls.Add(label2);
             groupBox1.Controls.Add(txtPlaca);
@@ -104,6 +108,7 @@
             button3.TabIndex = 2;
             button3.Text = "Veículos Estacionados";
             button3.UseVisualStyleBackColor = true;
+            button3.Click += button3_Click;
             // 
             // buttonRetirar
             // 
@@ -127,10 +132,32 @@
             buttonEstacionar.UseVisualStyleBackColor = true;
             buttonEstacionar.Click += buttonEstacionar_Click;
             // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Font = new Font("Arial", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label3.Location = new Point(24, 321);
+            label3.Name = "label3";
+            label3.Size = new Size(138, 18);
+            label3.TabIndex = 7;
+            label3.Text = "Vagas Disponíveis";
+            // 
+            // button1
+            // 
+            button1.Font = new Font("Arial", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            button1.Location = new Point(22, 354);
+            button1.Name = "button1";
+            button1.Size = new Size(208, 31);
+            button1.TabIndex = 8;
+            button1.Text = "Vagas Diponíveis";
+            button1.UseVisualStyleBackColor = true;
+            button1.Click += button1_Click;
+            // 
             // Menu
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
+            BackColor = SystemColors.GradientActiveCaption;
             ClientSize = new Size(514, 491);
             Controls.Add(groupBox1);
             Name = "Menu";
@@ -150,5 +177,7 @@
         private TextBox txtPlaca;
         private Label label1;
         private Button buttonSair;
+        private Button button1;
+        private Label label3;
     }
 }

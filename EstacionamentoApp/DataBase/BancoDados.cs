@@ -6,7 +6,7 @@ namespace EstacionamentoApp.DataBase
 {
     public class BancoDados
     {
-        private string connectionString = "Server=localhost;Database=teste;User ID=root;Password=1234;";
+        private string connectionString = "Server=localhost;Database=teste;User ID=root;Password=25130321;";
 
         public void EntradaVeiculo(Veiculo veiculo)
         {

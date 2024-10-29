@@ -1,38 +1,61 @@
-﻿using EstacionamentoApp.Aplicacoes;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using EstacionamentoApp.DataBase;
+using EstacionamentoApp.Interface;
+using EstacionamentoApp.Management;
+using MySql.Data.MySqlClient;
+using System.Numerics;
 
 namespace EstacionamentoApp
 {
     public partial class Menu : Form
     {
+        private readonly EstacionamentoService _estacionamentoService;
         public Menu()
         {
             InitializeComponent();
+            var bancoDados = new BancoDados(); // injeção do repositório
+            int vagas = 0;
+            decimal valor = 0;
+
+            string connectionString = "Server=localhost;Database=teste;User ID=root;Password=25130321;";
+
+            using (MySqlConnection connection = new MySqlConnection(connectionString))
+            {
+                string query = "SELECT TotalVagas, ValorHora FROM estacionamento";
+                using (MySqlCommand command = new MySqlCommand(query, connection))
+                {
+                    connection.Open();
+                    using (MySqlDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            valor = reader.GetDecimal("ValorHora");
+                            vagas = reader.GetInt32("TotalVagas");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Nenhum registro encontrado.");
+                            return;
+                        }
+                    }
+                }
+            }
+
+            _estacionamentoService = new EstacionamentoService(valor, vagas);
         }
 
         private void buttonEstacionar_Click(object sender, EventArgs e)
         {
             string placa = txtPlaca.Text.Trim();
 
-            VeiculoRepository.AdicionarVeiculo(placa);
-
-            if (string.IsNullOrEmpty(placa))
+            try
             {
-                MessageBox.Show("Por favor, insira uma placa.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
+                _estacionamentoService.AdicionarVeiculo(placa);
+                MessageBox.Show($"Veículo com placa {placa} adicionado.");
             }
-
-            MessageBox.Show($"A placa inserida foi: {placa}", "Informação",
-                            MessageBoxButtons.OK,
-                            MessageBoxIcon.Information);
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void buttonRetirar_Click(object sender, EventArgs e)
@@ -40,19 +63,15 @@ namespace EstacionamentoApp
             string placa = txtPlaca.Text.Trim();
 
 
-            if (string.IsNullOrEmpty(placa))
+            try
             {
-                MessageBox.Show("Por favor, insira uma placa.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
+                _estacionamentoService.RemoverVeiculo(placa);
+                MessageBox.Show($"Veículo com placa {placa} removido.");
             }
-
-            MessageBox.Show($"O Veículo de placa:{placa}, Foi Retirado Valor:",
-                            "Informação", MessageBoxButtons.OK,
-                            MessageBoxIcon.Information);
-
-        }
-        private void txtPlaca_TextChanged(object sender, EventArgs e)
-        {
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
 
         }
 
@@ -62,7 +81,7 @@ namespace EstacionamentoApp
 
             if (form1 != null)
             {
-                form1.Show(); 
+                form1.Show();
             }
             else
             {
@@ -72,5 +91,36 @@ namespace EstacionamentoApp
 
             this.Close();
         }
+        private void txtPlaca_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                _estacionamentoService.ListarVeiculos();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                _estacionamentoService.VagasDesocupadas();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+        }
     }
+
 }
