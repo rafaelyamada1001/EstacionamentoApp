@@ -8,39 +8,12 @@ namespace EstacionamentoApp
 {
     public partial class Menu : Form
     {
-        private readonly EstacionamentoService _estacionamentoService;
-        public Menu()
+
+        private readonly IVeiculoRepository _veiculoRepository;
+        public Menu(IVeiculoRepository veiculoRepository)
         {
             InitializeComponent();
-            var bancoDados = new BancoDados(); // injeção do repositório
-            int vagas = 0;
-            decimal valor = 0;
-
-            string connectionString = "Server=localhost;Database=teste;User ID=root;Password=25130321;";
-
-            using (MySqlConnection connection = new MySqlConnection(connectionString))
-            {
-                string query = "SELECT TotalVagas, ValorHora FROM estacionamento";
-                using (MySqlCommand command = new MySqlCommand(query, connection))
-                {
-                    connection.Open();
-                    using (MySqlDataReader reader = command.ExecuteReader())
-                    {
-                        if (reader.Read())
-                        {
-                            valor = reader.GetDecimal("ValorHora");
-                            vagas = reader.GetInt32("TotalVagas");
-                        }
-                        else
-                        {
-                            Console.WriteLine("Nenhum registro encontrado.");
-                            return;
-                        }
-                    }
-                }
-            }
-
-            _estacionamentoService = new EstacionamentoService(valor, vagas);
+            _veiculoRepository = veiculoRepository;
         }
 
         private void buttonEstacionar_Click(object sender, EventArgs e)
@@ -49,7 +22,7 @@ namespace EstacionamentoApp
 
             try
             {
-                _estacionamentoService.AdicionarVeiculo(placa);
+                _veiculoRepository.AdicionarVeiculo(placa);
                 MessageBox.Show($"Veículo com placa {placa} adicionado.");
             }
             catch (Exception ex)
@@ -65,8 +38,8 @@ namespace EstacionamentoApp
 
             try
             {
-                _estacionamentoService.RemoverVeiculo(placa);
-                MessageBox.Show($"Veículo com placa {placa} removido.");
+                _veiculoRepository.RemoverVeiculo(placa);
+ 
             }
             catch (Exception ex)
             {
@@ -100,7 +73,7 @@ namespace EstacionamentoApp
         {
             try
             {
-                _estacionamentoService.ListarVeiculos();
+                _veiculoRepository.ListarVeiculos();
             }
             catch (Exception ex)
             {
@@ -113,7 +86,7 @@ namespace EstacionamentoApp
         {
             try
             {
-                _estacionamentoService.VagasDesocupadas();
+                _veiculoRepository.VagasDesocupadas();
             }
             catch (Exception ex)
             {

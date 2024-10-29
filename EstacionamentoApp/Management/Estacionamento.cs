@@ -8,7 +8,7 @@ namespace EstacionamentoApp.Management
     public class EstacionamentoService : IVeiculoRepository
 
     {
-        private string connectionString = "Server=localhost;Database=teste;User ID=root;Password=25130321;";
+        private string connectionString = "Server=localhost;Database=teste;User ID=root;Password=1234;";
 
         private decimal valorHora;
         public int Vagas { get; set; }
@@ -28,6 +28,22 @@ namespace EstacionamentoApp.Management
                 using (MySqlCommand command = new MySqlCommand(query, connection))
                 {
                     connection.Open();
+
+                    string verificaPlacaQuery = "SELECT COUNT(placa) as qtde FROM movger WHERE placa = @placa AND horasaida IS NULL";
+                    using (MySqlCommand verificaPlacaCommand = new MySqlCommand(verificaPlacaQuery, connection))
+                    {
+                        verificaPlacaCommand.Parameters.AddWithValue("@placa", placa);
+                        int veiculosComMesmaPlaca = Convert.ToInt32(verificaPlacaCommand.ExecuteScalar());
+
+                        if (veiculosComMesmaPlaca > 0)
+                        {
+                            MessageBox.Show("Já existe um veículo estacionado com essa placa!", 
+                                "Atenção",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Warning);
+                            return;
+                        }
+                    }
                     using (MySqlDataReader reader = command.ExecuteReader())
                     {
                         if (!reader.Read())
@@ -39,13 +55,20 @@ namespace EstacionamentoApp.Management
 
                         if (string.IsNullOrEmpty(placa))
                         {
-                            Console.WriteLine("Campo não pode ser vazio!");
+                            MessageBox.Show("Campo não pode ser vazio!", 
+                                            "Atenção", 
+                                            MessageBoxButtons.OK, 
+                                            MessageBoxIcon.Warning);
                             return;
+                               
                         }
 
                         if (vagasOcupadas >= Vagas)
                         {
-                            Console.WriteLine("Estacionamento cheio!");
+                            MessageBox.Show("Estacionamento cheio!",
+                                            "Atenção",
+                                            MessageBoxButtons.OK,
+                                            MessageBoxIcon.Warning);
                             return;
                         }
                         var veiculo = new Veiculo(placa);
@@ -72,7 +95,7 @@ namespace EstacionamentoApp.Management
                     {
                         if (!reader.Read())
                         {
-                            Console.WriteLine("Veiculo não encontrado");
+                            MessageBox.Show("Veiculo não encontrado");
                             return;
                         }
 
@@ -86,10 +109,8 @@ namespace EstacionamentoApp.Management
                         var valorTotal = (decimal)tempoEstacionado.TotalHours * valorHora;
 
                         var banco = new BancoDados();
-                        banco.SaidaVeiculo(placa, horaSaida, horasEstacionadas, minutosEstacionados, valorTotal);
-                        Console.WriteLine($"Veículo {placa} removido do estacionamento.");
-                        Console.WriteLine
-                            ($"Entrada: {horaEntrada} | Saída: {horaSaida} | Valor Total: R${valorTotal:F2} | " +
+                        banco.SaidaVeiculo(placa, horaSaida, horasEstacionadas, minutosEstacionados, valorTotal);                        
+                        MessageBox.Show ($"Entrada: {horaEntrada} | Saída: {horaSaida} | \nValor Total: R${valorTotal:F2} | " +
                             $"HorasEstacionadas:{Math.Round(horasEstacionadas)}h {minutosEstacionados}min ");
 
                     }
@@ -110,11 +131,17 @@ namespace EstacionamentoApp.Management
 
                         if (reader.HasRows)
                         {
+                            List<string> veiculos =  new List<string> ();
                             while (reader.Read())
                             {
-                                string message = $"Placa: {reader.GetString("placa")} - Hora Entrada: {reader.GetDateTime("HoraEntrada")}";
-                                MessageBox.Show(message);
+                                string placa = reader.GetString("placa");
+                                DateTime horaEntrada = reader.GetDateTime("HoraEntrada");
+                                veiculos.Add($"Placa:{placa} - Hora Entrada:{horaEntrada}");
                             }
+                            string mensagem = "Veículos estacionados:\n" + string.Join("\n", veiculos);
+                            MessageBox.Show(mensagem, "Veículos Estacionados", 
+                                            MessageBoxButtons.OK, 
+                                            MessageBoxIcon.Information);
                         }
                         else
                         {
@@ -134,7 +161,7 @@ namespace EstacionamentoApp.Management
                     connection.Open();
                     using (MySqlDataReader reader = command.ExecuteReader())
                     {
-                        if (reader.Read())
+                        if (!reader.Read())
                         {
                             string message = ($"Vagas Desocupadas:{Vagas}");
                             MessageBox.Show(message);
@@ -143,7 +170,8 @@ namespace EstacionamentoApp.Management
 
                         int vagasOcupadas = reader.GetInt32("qtde");
                         var vagasLivres = Vagas - vagasOcupadas;
-                        Console.WriteLine($"Vagas Disponíveis: {vagasLivres}");
+                        string messageVagasLivres = ($"Vagas Disponíveis: {vagasLivres}");
+                        MessageBox.Show (messageVagasLivres);
                     }
                 }
             }

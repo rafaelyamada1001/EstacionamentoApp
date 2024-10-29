@@ -6,7 +6,7 @@ namespace EstacionamentoApp.DataBase
 {
     public class BancoDados
     {
-        private string connectionString = "Server=localhost;Database=teste;User ID=root;Password=25130321;";
+        private string connectionString = "Server=localhost;Database=teste;User ID=root;Password=1234;";
 
         public void EntradaVeiculo(Veiculo veiculo)
         {
@@ -41,7 +41,7 @@ namespace EstacionamentoApp.DataBase
 
                     command.Parameters.AddWithValue("@Placa", placa);
                     command.Parameters.AddWithValue("@HoraSaida", horaSaida);
-                    command.Parameters.AddWithValue("@PermanenciaHora", Math.Round(horasEstacionadas));
+                    command.Parameters.AddWithValue("@PermanenciaHora", Math.Floor(horasEstacionadas));
                     command.Parameters.AddWithValue("@PermanenciaMin", minutosEstacionados);
                     command.Parameters.AddWithValue("@Valor", Valor.ToString("F2"));
 
