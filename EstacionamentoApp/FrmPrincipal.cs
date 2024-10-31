@@ -4,12 +4,12 @@ using MySql.Data.MySqlClient;
 
 namespace EstacionamentoApp
 {
-    public partial class Form1 : Form
+    public partial class FrmPrincipal : Form
     {
         
         private IVeiculoRepository veiculoRepository;
 
-        public Form1()
+        public FrmPrincipal()
         {
             InitializeComponent();
 
@@ -66,12 +66,12 @@ namespace EstacionamentoApp
             {
                 if(txtUsuario.Text.Equals("123") && txtSenha.Text.Equals("123"))
                 {
-                    
-                    var menu = new Menu(veiculoRepository);
-                    menu.Show(); 
+
+                    var menu = new FrmMenu(veiculoRepository);
+                    menu.Show();
 
                     this.Visible = false;
-                    
+
                 }
                 else
                 {

@@ -6,11 +6,11 @@ using System.Numerics;
 
 namespace EstacionamentoApp
 {
-    public partial class Menu : Form
+    public partial class FrmMenu : Form
     {
 
         private readonly IVeiculoRepository _veiculoRepository;
-        public Menu(IVeiculoRepository veiculoRepository)
+        public FrmMenu(IVeiculoRepository veiculoRepository)
         {
             InitializeComponent();
             _veiculoRepository = veiculoRepository;
@@ -23,7 +23,6 @@ namespace EstacionamentoApp
             try
             {
                 _veiculoRepository.AdicionarVeiculo(placa);
-                MessageBox.Show($"Veículo com placa {placa} adicionado.");
             }
             catch (Exception ex)
             {
@@ -50,7 +49,7 @@ namespace EstacionamentoApp
 
         private void buttonSair_Click(object sender, EventArgs e)
         {
-            Form1 form1 = Application.OpenForms["Form1"] as Form1;
+            FrmPrincipal form1 = Application.OpenForms["Form1"] as FrmPrincipal;
 
             if (form1 != null)
             {
@@ -58,7 +57,7 @@ namespace EstacionamentoApp
             }
             else
             {
-                form1 = new Form1();
+                form1 = new FrmPrincipal();
                 form1.Show();
             }
 

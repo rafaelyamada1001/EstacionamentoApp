@@ -1,6 +1,6 @@
 ﻿namespace EstacionamentoApp
 {
-    partial class Menu
+    partial class FrmMenu
     {
         /// <summary>
         /// Required designer variable.

@@ -7,6 +7,7 @@
             PlacaVeiculo = placa;
             HoraEntrada = DateTime.Now;
         }
+
         public string PlacaVeiculo { get; set; }
         public DateTime HoraEntrada { get; set; }
     }

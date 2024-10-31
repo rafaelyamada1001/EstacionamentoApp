@@ -72,7 +72,8 @@ namespace EstacionamentoApp.Management
                             return;
                         }
                         var veiculo = new Veiculo(placa);
-                        Console.WriteLine($"Veículo {placa} adicionado ao estacionamento às {veiculo.HoraEntrada}.");
+                        MessageBox.Show($"Veículo {placa} adicionado ao estacionamento às {veiculo.HoraEntrada}.",
+                                        "Sucesso!");
                         var banco = new BancoDados();
                         banco.EntradaVeiculo(veiculo);
 
@@ -103,15 +104,15 @@ namespace EstacionamentoApp.Management
 
                         var horaSaida = DateTime.Now;
                         var tempoEstacionado = horaSaida - horaEntrada;
-                        var horasEstacionadas = tempoEstacionado.TotalHours;
+                        var horasEstacionadas = tempoEstacionado.Hours;
                         var minutosEstacionados = tempoEstacionado.Minutes;
-
-                        var valorTotal = (decimal)tempoEstacionado.TotalHours * valorHora;
+                        var valorMinuto = valorHora / 60;
+                        var valorTotal = valorMinuto * minutosEstacionados;
 
                         var banco = new BancoDados();
-                        banco.SaidaVeiculo(placa, horaSaida, horasEstacionadas, minutosEstacionados, valorTotal);                        
-                        MessageBox.Show ($"Entrada: {horaEntrada} | Saída: {horaSaida} | \nValor Total: R${valorTotal:F2} | " +
-                            $"HorasEstacionadas:{Math.Round(horasEstacionadas)}h {minutosEstacionados}min ");
+                        banco.SaidaVeiculo(placa, horaSaida, horasEstacionadas, minutosEstacionados, valorTotal);
+                        MessageBox.Show($"Entrada: {horaEntrada} | Saída: {horaSaida} | \nValor Total: R${valorTotal:F2} | " +
+                            $"HorasEstacionadas: {horasEstacionadas}h {minutosEstacionados}min ");
 
                     }
                 }
